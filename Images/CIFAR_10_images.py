@@ -2,7 +2,6 @@ from pathlib import Path
 
 import numpy as np
 
-#----------------------------------Gestion des fichiers CIFAR-10----------------------------#
 
 def load_batch(batch_path):
     """
@@ -71,5 +70,3 @@ def load_image(batch_path, image_index=0):
         )
 
     return images[image_index]
-
-#-------------------------------------------------------------------------------------------#

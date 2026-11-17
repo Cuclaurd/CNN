@@ -11,6 +11,23 @@ def adaptation_image_centre(image):
     new_image[3:28, 3:28] = image[:25, :25]
     return new_image
 
+def normalize_image(image):
+    """Normalizes each RGB channel independently."""
+    img_cropped = np.asarray(image, dtype=np.float32)
+    height, width, channels = img_cropped.shape
+    N = height * width
+
+    img_norm = np.empty_like(img_cropped)
+    for channel in range(channels):
+        mu = np.mean(img_cropped[:, :, channel])
+        sigma = np.std(img_cropped[:, :, channel])
+        img_norm[:, :, channel] = (
+            img_cropped[:, :, channel] - mu
+        ) / max(sigma, 1.0 / np.sqrt(N))
+
+    return img_norm
+
+
 
 def display_input_image(image):
     """Displays an RGB image and prints every pixel as [R, G, B]."""

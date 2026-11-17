@@ -15,12 +15,6 @@ def open_image(image_path):
         np.ndarray: The image in HWC format: (height, width, 3).
     """
     with Image.open(image_path) as image:
-        image_array = np.array(image.convert("RGB"))
-
-    if image_array.ndim != 3 or image_array.shape[2] != 3:
-        raise ValueError(
-            f"Format d'image inattendu : {image_array.shape}. "
-            "Le format attendu est HWC : (hauteur, largeur, 3)."
-        )
+        image_array = np.array(image.convert("RGB"), dtype=np.float32)
 
     return image_array

@@ -2,6 +2,7 @@ from pathlib import Path
 
 import numpy as np
 
+#----------------------------------Gestion des fichiers CIFAR-10----------------------------#
 
 def load_batch(batch_path):
     """
@@ -50,27 +51,25 @@ def print_image(image):
     with np.printoptions(threshold=np.inf, linewidth=200):
         print(image)
 
+def load_image(batch_path, image_index=0):
+    """
+    Returns one 32x32 RGB image from a binary CIFAR-10 batch.
 
+    Parameters:
+        batch_path (str | Path): Path to a .bin batch file.
+        image_index (int): Zero-based index of the requested image.
 
+    Returns:
+        np.ndarray: Image with shape (32, 32, 3).
+    """
+    images, _ = load_batch(batch_path)
 
-def main():
-    dataset_path = Path("cifar-10-batches-bin")
-    batch_path = dataset_path / "data_batch_1.bin"
-    meta_path = dataset_path / "batches.meta.txt"
+    if not 0 <= image_index < len(images):
+        raise IndexError(
+            f"Index d'image invalide : {image_index}. "
+            f"Choisis une valeur entre 0 et {len(images) - 1}."
+        )
 
+    return images[image_index]
 
-    images, labels = load_batch(batch_path)
-    label_names = load_label_names(meta_path)
-
-    image_index = 0
-    image = images[image_index]
-    label = int(labels[image_index])
-
-    print(f"Nombre d'images dans le batch : {len(images)}")
-    print(f"Image sélectionnée : {image_index}")
-    print(f"Label : {label} ({label_names[label]})")
-    print(f"Forme de l'image : {image.shape}")
-    print_image(image)
-
-if __name__ == "__main__":
-    main()
+#-------------------------------------------------------------------------------------------#

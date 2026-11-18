@@ -92,14 +92,6 @@ def conv2d_relu(input_fmap, weights, biases):
     nombre_canaux = input_fmap.shape[2]
     nombre_filtres = weights.shape[3]
 
-    # Ajoute une bordure de zéros pour ne réduire ni la hauteur ni la largeur.
-    padded = np.pad(
-        input_fmap,
-        ((1, 1), (1, 1), (0, 0)),
-        mode="constant",
-        constant_values=0.0,
-    )
-
     sortie = np.zeros(
         (hauteur, largeur, nombre_filtres),
         dtype=np.float32,
@@ -113,11 +105,23 @@ def conv2d_relu(input_fmap, weights, biases):
                 somme = biases[filtre]
 
                 # Parcourt les trois lignes et colonnes du filtre 3 x 3.
-                for y in range(Filter_size):
-                    for x in range(Filter_size):
+                for y in range(3):
+                    for x in range(3):
+                        pixel_ligne = ligne + y - 1
+                        pixel_colonne = colonne + x - 1
+
+                        # Ignore les positions situées hors de l'image.
+                        if (
+                            pixel_ligne < 0
+                            or pixel_ligne >= hauteur
+                            or pixel_colonne < 0
+                            or pixel_colonne >= largeur
+                        ):
+                            continue
+
                         # Additionne les trois canaux (RGB ou couches précédentes).
                         for canal in range(nombre_canaux):
-                            pixel = padded[ligne + y, colonne + x, canal]
+                            pixel = input_fmap[pixel_ligne, pixel_colonne, canal]
                             somme += pixel * weights[y, x, canal, filtre]
 
                 # ReLU : remplace les valeurs négatives par zéro.

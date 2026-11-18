@@ -127,25 +127,50 @@ def conv2d_relu(input_fmap, weights, biases):
 
 
 def maxpool(input_fmap, pool_size=3, stride_size=2):
-    img_size, _, channels = input_fmap.shape
-    out_size = img_size // stride_size
+    hauteur = input_fmap.shape[0]
+    largeur = input_fmap.shape[1]
+    nombre_cartes = input_fmap.shape[2]
+
+    # La sortie est environ deux fois plus petite avec un pas de 2.
+    hauteur_sortie = hauteur // stride_size
+    largeur_sortie = largeur // stride_size
+
+    # Ajoute une ligne en bas et une colonne à droite si nécessaire.
     padded = np.pad(
         input_fmap,
         ((0, 1), (0, 1), (0, 0)),
         mode="constant",
         constant_values=0.0,
     )
-    output = np.zeros((out_size, out_size, channels), dtype=np.float32)
 
-    for j in range(0, img_size, stride_size):
-        for k in range(0, img_size, stride_size):
-            patch = padded[j:j + pool_size, k:k + pool_size, :]
-            output[j // stride_size, k // stride_size, :] = np.max(
-                patch,
-                axis=(0, 1),
-            )
+    sortie = np.zeros(
+        (hauteur_sortie, largeur_sortie, nombre_cartes),
+        dtype=np.float32,
+    )
 
-    return output
+    # Parcourt l'image avec un pas de 2 pixels.
+    sortie_ligne = 0
+    for ligne in range(0, hauteur, stride_size):
+        sortie_colonne = 0
+
+        for colonne in range(0, largeur, stride_size):
+            # Pour chaque carte, garde la plus grande valeur de la fenêtre 3 x 3.
+            for carte in range(nombre_cartes):
+                maximum = -np.inf
+
+                for y in range(pool_size):
+                    for x in range(pool_size):
+                        valeur = padded[ligne + y, colonne + x, carte]
+                        if valeur > maximum:
+                            maximum = valeur
+
+                sortie[sortie_ligne, sortie_colonne, carte] = maximum
+
+            sortie_colonne += 1
+
+        sortie_ligne += 1
+
+    return sortie
 
 
 def reshape(input_fmap):

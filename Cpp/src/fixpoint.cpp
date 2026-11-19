@@ -7,6 +7,9 @@ namespace cnn {
 FixedPoint::FixedPoint()
     : raw_(0) {}
 
+FixedPoint::FixedPoint(int value)
+    : raw_(static_cast<std::int32_t>(value * scale)) {}
+
 FixedPoint::FixedPoint(float value)
     : raw_(static_cast<std::int32_t>(value * scale)) {}
 
@@ -64,6 +67,16 @@ FixedPoint FixedPoint::operator/(FixedPoint other) const {
         static_cast<std::int64_t>(scale);
     result /= other.raw_;
     return from_raw(static_cast<std::int32_t>(result));
+}
+
+FixedPoint& FixedPoint::operator+=(FixedPoint other) {
+    raw_ = static_cast<std::int32_t>(raw_ + other.raw_);
+    return *this;
+}
+
+FixedPoint& FixedPoint::operator-=(FixedPoint other) {
+    raw_ = static_cast<std::int32_t>(raw_ - other.raw_);
+    return *this;
 }
 
 bool FixedPoint::operator==(FixedPoint other) const {

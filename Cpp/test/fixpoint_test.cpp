@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "../include/fixpoint.h"
+#include "../include/cnn_ip.h"
 
 using namespace std;
 using namespace cnn;
@@ -15,20 +16,21 @@ int main() {
     Fixed16 product = a * b;
     Fixed16 quotient = a / b;
 
-    std::cout << "sum=" << sum.to_double() << '\n';
-    std::cout << "difference=" << difference.to_double() << '\n';
-    std::cout << "product=" << product.to_double() << '\n';
-    std::cout << "quotient=" << quotient.to_double() << '\n';
-
-    cnn::Fixed16 large(30000.0);
-    cnn::Fixed16 overflow = large + large;
-    std::cout << "overflow=" << overflow.to_double() << '\n';
+    cout << "sum=" << sum.to_double() << '\n';
+    cout << "difference=" << difference.to_double() << '\n';
+    cout << "product=" << product.to_double() << '\n';
+    cout << "quotient=" << quotient.to_double() << '\n';
+    
+    Fixed16 large(30000.0);
+    Fixed16 overflow = large + large;
+    cout << "overflow=" << overflow.to_double() << '\n';
 
     return
-        (std::abs(sum.to_double() - 1.75) < 0.001 &&
-         std::abs(difference.to_double() - 1.25) < 0.001 &&
-         std::abs(product.to_double() - 0.375) < 0.001 &&
-         std::abs(quotient.to_double() - 6.0) < 0.001)
+        (abs(sum.to_double() - 1.75) < 0.001 &&
+         abs(difference.to_double() - 1.25) < 0.001 &&
+         abs(product.to_double() - 0.375) < 0.001 &&
+         abs(overflow.to_double() - 60000.0) < 0.001 &&
+         abs(quotient.to_double() - 6.0) < 0.001)
         ? 0
         : 1;
 }

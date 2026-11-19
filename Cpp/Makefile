@@ -42,5 +42,6 @@ test: all
 	done
 
 clean:
-	rm -rf $(BUILD_DIR)
-	find . -name '*.o' -delete
+	@echo "On prie fort"
+	@rm -rf $(BUILD_DIR)
+	@find . -name '*.o' -delete

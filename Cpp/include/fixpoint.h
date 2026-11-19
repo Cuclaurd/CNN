@@ -12,6 +12,7 @@ public:
     static constexpr std::int32_t scale = 65536;
 
     FixedPoint();
+    FixedPoint(int value);
     FixedPoint(float value);
     FixedPoint(double value);
 
@@ -26,6 +27,9 @@ public:
     FixedPoint operator-(FixedPoint other) const;
     FixedPoint operator*(FixedPoint other) const;
     FixedPoint operator/(FixedPoint other) const;
+
+    FixedPoint& operator+=(FixedPoint other);
+    FixedPoint& operator-=(FixedPoint other);
 
     bool operator==(FixedPoint other) const;
     bool operator!=(FixedPoint other) const;

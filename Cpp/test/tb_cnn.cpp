@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <cmath>
+#include <chrono>
 
 #include "cnn_ip.h"
 #include "cnn_coeffs.h"
@@ -65,14 +66,17 @@ bool read_and_normalize_cifar(std::ifstream &file, int index, data_t img_norm[24
 }
 
 int main() {
-    std::ifstream bin_file("../cifar-10-batches-bin/test_batch.bin", std::ios::binary);
+    std::ifstream bin_file("../../cifar-10-batches-bin/test_batch.bin", std::ios::binary);
     if (!bin_file.is_open()) {
         std::cerr << "Erreur : impossible d'ouvrir test_batch.bin" << std::endl;
         return 1;
     }
 
-    int nb_images = 10000; 
+    int nb_images = 1000; 
     int correct = 0;
+
+    auto debut = std::chrono::steady_clock::now();
+
 
     for (int idx = 0; idx < nb_images; idx++) {
         data_t img_in[24][24][3];
@@ -102,6 +106,13 @@ int main() {
                   << " | Predit: " << pred_label 
                   << " | Taux: " << (100.0f * correct / (idx + 1)) << "%" << std::endl;
     }
+
+    auto fin = std::chrono::steady_clock::now();
+
+    auto duree_ms = std::chrono::duration_cast<std::chrono::milliseconds>(fin - debut);
+    auto duree_us = std::chrono::duration_cast<std::chrono::microseconds>(fin - debut);
+
+    std::cout << "Temps : " << duree_ms.count() << " ms (" << duree_us.count() << " µs)\n";
 
     std::cout << "\n= TAUX DE DETECTION FINAL : " << (100.0f * correct / nb_images) << "% ===" << std::endl;
     return 0;
